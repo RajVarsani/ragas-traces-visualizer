@@ -8,5 +8,5 @@ export const fontSans = FontSans({
 export const fontMono = Space_Mono({
     subsets: ["latin"],
     weight: ["400", "700"],
-    variable: "--font-modo",
+    variable: "--font-mono",
 });
