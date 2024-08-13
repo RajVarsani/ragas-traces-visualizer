@@ -5,6 +5,13 @@ import { fontMono } from "@/app/fonts";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Sheet,
   SheetContent,
   SheetDescription,
@@ -14,11 +21,10 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn, getAccuracy } from "@/lib/utils";
 import { CopyIcon } from "@radix-ui/react-icons";
-
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-// import { coldarkDark as codeTheme } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { motion } from "framer-motion";
-import * as allThemes from "react-syntax-highlighter/dist/esm/styles/prism";
+import { useState } from "react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus as codeTheme } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 const CodeBlock = ({ code, language }: { code: string; language: string }) => {
   return (
@@ -30,10 +36,25 @@ const CodeBlock = ({ code, language }: { code: string; language: string }) => {
         position: "relative",
       }}
     >
+      <SyntaxHighlighter
+        language={language}
+        style={codeTheme}
+        wrapLines
+        wrapLongLines
+        customStyle={{
+          fontSize: 8,
+          fontFamily: fontMono.variable,
+          borderRadius: "1rem",
+          padding: "1rem",
+          margin: 0,
+        }}
+      >
+        {code}
+      </SyntaxHighlighter>
       <Button
         variant="ghost"
         className={cn(
-          "px-0 py-1 h-fit text-slate-400 uppercase absolute top-2 right-2 bg-white bg-opacity-5",
+          "px-0 py-2 h-fit text-slate-400 uppercase absolute top-2 right-2 bg-white bg-opacity-5",
           fontMono.className
         )}
         size="icon"
@@ -43,26 +64,30 @@ const CodeBlock = ({ code, language }: { code: string; language: string }) => {
           <CopyIcon className="w-4 h-4" />
         </div>
       </Button>
-      <SyntaxHighlighter
-        language={language}
-        style={allThemes.vscDarkPlus}
-        wrapLines
-        wrapLongLines
-        customStyle={{
-          fontSize: 8,
-          fontFamily: fontMono.variable,
-          borderRadius: "0.75rem",
-          padding: "1rem",
-        }}
-      >
-        {code}
-      </SyntaxHighlighter>
     </motion.div>
   );
 };
 
+const INPUT_FORMATS = ["JSON", "Markdown"] as const;
+
+const getMarkdownFromInputJSON = (input: object) => {
+  return Object.entries(input)
+    .map(
+      ([key, value]) =>
+        `## ${key}\n${
+          Array.isArray(value)
+            ? value.map((v, index) => `### ${index}\n${v}`).join("\n")
+            : value
+        }\n\n`
+    )
+    .join("\n");
+};
+
 const TraceDetailsSheet = () => {
   const { activeTrace, isOpen, closeTrace } = useTraceSheetStore();
+  const [inputFormat, setInputFormat] = useState<
+    (typeof INPUT_FORMATS)[number]
+  >(INPUT_FORMATS[0]);
 
   const isChain = activeTrace?.type === "chain";
 
@@ -148,11 +173,38 @@ const TraceDetailsSheet = () => {
                     )}
                     <TabsTrigger value="output">Output</TabsTrigger>
                   </TabsList>
-                  <TabsContent value="input">
-                    <CodeBlock
-                      code={JSON.stringify(activeTrace.inputs, null, 2)}
-                      language="js"
-                    />
+                  <TabsContent value="input" className="flex flex-col gap-3">
+                    <Select
+                      value={inputFormat}
+                      onValueChange={(value) => setInputFormat(value as any)}
+                    >
+                      <SelectTrigger className="w-[140px] capitalize truncate bg-white bg-opacity-5 border-none">
+                        <SelectValue placeholder="Theme" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {INPUT_FORMATS.map((theme) => (
+                          <SelectItem
+                            key={theme}
+                            value={theme}
+                            className="capitalize"
+                          >
+                            {theme}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    {inputFormat === INPUT_FORMATS[0] ? (
+                      <CodeBlock
+                        code={JSON.stringify(activeTrace.inputs, null, 2)}
+                        language="json"
+                      />
+                    ) : (
+                      <CodeBlock
+                        code={getMarkdownFromInputJSON(activeTrace.inputs)}
+                        language="markdown"
+                      />
+                    )}
                   </TabsContent>
                   <TabsContent value="output">
                     <CodeBlock
