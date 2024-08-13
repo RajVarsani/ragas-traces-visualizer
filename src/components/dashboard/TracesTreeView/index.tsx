@@ -1,6 +1,14 @@
 "use client";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useTracesDetails } from "@/hooks/traces.hooks";
+import { TraceDetails } from "@/types";
 import {
   Background,
   Controls,
@@ -12,8 +20,7 @@ import {
   useNodesState,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   buildChildren,
   getAllSubtreeNodes,
@@ -22,14 +29,11 @@ import {
 } from "./helpers";
 import TraceNode from "./TraceNode";
 import { TRACE_NODE_TYPE } from "./TraceNode/constants";
-import {
-  TraceNodeMetadata,
-  TraceNode as TraceNodeType,
-} from "./TraceNode/types";
+import { TraceNode as TraceNodeType } from "./TraceNode/types";
 
 const TracesTreeView = () => {
   const { spans, tracesWithRelations } = useTracesDetails();
-  // const [nodes, setNodes, onNodesChange] = useNodesState<TraceNodeType>([]);
+  const [activeItem, setActiveItem] = useState(0);
   const [nodes, setNodes, onNodesChange] = useNodesState<TraceNodeType>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
@@ -144,9 +148,9 @@ const TracesTreeView = () => {
     );
   };
 
-  useEffect(() => {
+  const replaceRoot = (root: TraceDetails) => {
     const rootNode = mapTraceToNode(
-      spans[1],
+      root,
       {
         horizontal: {
           parentPosition: 0,
@@ -169,35 +173,63 @@ const TracesTreeView = () => {
     );
 
     setNodes([rootNode]);
+    setEdges([]);
     setTimeout(() => {
       expandNode(rootNode);
     }, 0);
-  }, []);
+  };
+
+  useEffect(() => {
+    replaceRoot(spans[activeItem]);
+  }, [activeItem]);
 
   return (
-    <ReactFlow
-      nodes={nodes}
-      edges={edges}
-      colorMode="dark"
-      selectionOnDrag
-      onNodesChange={onNodesChange}
-      onEdgesChange={onEdgesChange}
-      nodeTypes={{ [TRACE_NODE_TYPE]: TraceNode }}
-      panOnScroll
-      fitView
-      selectionMode={SelectionMode.Partial}
-      maxZoom={1.3}
-      minZoom={0.1}
-    >
-      <MiniMap
-        position="bottom-left"
-        pannable
-        zoomable
-        nodeColor={getNodeColor}
-      />
-      <Background />
-      <Controls showZoom position="bottom-right" />
-    </ReactFlow>
+    <>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        colorMode="dark"
+        selectionOnDrag
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        nodeTypes={{ [TRACE_NODE_TYPE]: TraceNode }}
+        panOnScroll
+        fitView
+        selectionMode={SelectionMode.Partial}
+        maxZoom={1.3}
+        minZoom={0.1}
+      >
+        <MiniMap
+          position="bottom-left"
+          pannable
+          zoomable
+          nodeColor={getNodeColor}
+        />
+        <Background />
+        <Controls showZoom position="bottom-right" />
+      </ReactFlow>
+      <div className="absolute top-5 left-5">
+        <Select
+          value={activeItem.toString()}
+          onValueChange={(value) => setActiveItem(parseInt(value))}
+        >
+          <SelectTrigger className="w-[280px] capitalize truncate rounded-sm bg-white bg-opacity-5">
+            <SelectValue placeholder="Theme" />
+          </SelectTrigger>
+          <SelectContent>
+            {spans.map((span, index) => (
+              <SelectItem
+                key={span.id}
+                value={index.toString()}
+                className="capitalize"
+              >
+                {span.self.name} - {span.id.split("-").at(-1)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+    </>
   );
 };
 

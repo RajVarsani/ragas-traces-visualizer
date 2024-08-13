@@ -1,5 +1,4 @@
 import TracesTreeView from "@/components/dashboard/TracesTreeView";
-import "@xyflow/react/dist/style.css";
 
 export default function Page() {
   return (

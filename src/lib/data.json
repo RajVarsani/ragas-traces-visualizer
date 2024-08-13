@@ -18,7 +18,7 @@
     },
     "self": { "name": "row 0" },
     "type": "chain",
-    "outputs": { "faithfulness": 0.8387096774193549 }
+    "outputs": { "faithfulness": 0.6387096774193549 }
   },
   "c7aa0dd5-0b6d-4a13-9de4-35dd26637668": {
     "parent_run_id": "150ad2a8-3d99-4f7e-a646-c41c3a1309f3",
@@ -32,7 +32,7 @@
     },
     "self": { "name": "faithfulness" },
     "type": "chain",
-    "outputs": { "output": 0.8387096774193549 }
+    "outputs": { "output": 0.4387096774193549 }
   },
   "cd14dd49-a8ea-4ef5-a800-e50bf0126f53": {
     "self": {
