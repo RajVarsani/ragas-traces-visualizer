@@ -148,7 +148,7 @@ const TracesTreeView = () => {
     );
   };
 
-  const replaceRoot = (root: TraceDetails) => {
+  const mountSpan = (root: TraceDetails) => {
     const rootNode = mapTraceToNode(
       root,
       {
@@ -180,7 +180,7 @@ const TracesTreeView = () => {
   };
 
   useEffect(() => {
-    replaceRoot(spans[activeItem]);
+    mountSpan(spans[activeItem]);
   }, [activeItem]);
 
   return (
