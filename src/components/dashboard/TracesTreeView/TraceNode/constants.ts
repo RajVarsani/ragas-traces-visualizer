@@ -1,0 +1,1 @@
+export const TRACE_NODE_TYPE = "trace-node" 
