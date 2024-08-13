@@ -2,6 +2,7 @@ import { TraceDetails } from "@/types"
 import { Edge } from "@xyflow/react"
 import { TRACE_NODE_TYPE } from "./TraceNode/constants"
 import { TraceNode, TraceNodeMetadata } from "./TraceNode/types"
+import { getAccuracy } from "@/lib/utils"
 
 export const countChildren = (trace: TraceDetails): number => {
     return trace.children.reduce((acc, child) => {
@@ -71,17 +72,6 @@ export const buildChildren = (node: TraceNode, meta: TraceNodeMetadata) => {
     return { nodes, edges }
 }
 
-
-export const getAccuracy = (trace: TraceDetails): number => {
-    if (trace.type === "chain") {
-        return Math.max(
-            parseFloat(trace.outputs.faithfulness?.toString() || "") || 0,
-            parseFloat(trace.outputs.output?.toString() || "") || 0
-        );
-    } else {
-        return 0
-    }
-}
 
 
 export const getNodeColor = (trace: TraceNode): string => {

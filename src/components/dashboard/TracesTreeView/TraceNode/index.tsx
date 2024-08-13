@@ -1,7 +1,7 @@
 import { fontMono } from "@/app/fonts";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, getAccuracy } from "@/lib/utils";
 import {
   CopyIcon,
   DoubleArrowDownIcon,
@@ -10,17 +10,18 @@ import {
 } from "@radix-ui/react-icons";
 import { Handle, Position } from "@xyflow/react";
 import { motion } from "framer-motion";
-import { getAccuracy } from "../helpers";
 import { getBackgroundColor, getBorderClass } from "./helpers";
 import { Props } from "./types";
+import useTraceSheetStore from "@/store/traceSheet";
 
 const TraceNode = (nodeDetails: Props) => {
+  const { openTrace } = useTraceSheetStore();
   const traceData = nodeDetails.data.data;
   const meta = nodeDetails.data.metadata;
   const handlers = meta.handlers;
 
   const id = traceData.id;
-  const partialId = id.split("-").pop();
+  const partialId = id.split("-").at(-1);
 
   const accentColor = getBorderClass(traceData);
   const backgroundColor = getBackgroundColor(traceData);
@@ -51,7 +52,7 @@ const TraceNode = (nodeDetails: Props) => {
     >
       <div
         className={cn(
-          "px-4 min-w-52 flex flex-col py-4 border border-opacity-60 rounded-2xl bg-opacity-5 gap-5 transition-all",
+          "px-4 min-w-52 flex flex-col py-4 border border-opacity-60 rounded-2xl bg-opacity-5 gap-5 transition-all ease-out",
           accentColor,
           backgroundColor,
           {
@@ -119,6 +120,7 @@ const TraceNode = (nodeDetails: Props) => {
             className="px-4 text-xs font-medium capitalize"
             // className="text-xs font-medium text-yellow-400 capitalize bg-yellow-400 bg-opacity-20"
             size="sm"
+            onClick={() => openTrace(traceData)}
           >
             Details
             <ExternalLinkIcon className="w-3 h-3 ml-2" />

@@ -1,5 +1,5 @@
+import { getAccuracy } from "@/lib/utils";
 import { TraceDetails } from "@/types";
-import { getAccuracy } from "../helpers";
 
 
 export const getBorderClass = (traceData: TraceDetails) => {
