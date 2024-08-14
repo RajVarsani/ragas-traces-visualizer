@@ -3,12 +3,15 @@
 import { Button } from "@/components/ui/button";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 const Header = () => {
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("q");
+
   const router = useRouter();
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(searchQuery || "");
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,6 +34,8 @@ const Header = () => {
             style={{
               all: "unset",
             }}
+            onChange={(e) => setQuery(e.target.value)}
+            value={query}
           />
           <Button
             type="submit"

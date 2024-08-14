@@ -1,14 +1,9 @@
+import { getAccuracy } from "@/lib/utils"
 import { TraceDetails } from "@/types"
 import { Edge } from "@xyflow/react"
 import { TRACE_NODE_TYPE } from "./TraceNode/constants"
 import { TraceNode, TraceNodeMetadata } from "./TraceNode/types"
-import { getAccuracy } from "@/lib/utils"
 
-export const countChildren = (trace: TraceDetails): number => {
-    return trace.children.reduce((acc, child) => {
-        return acc + 1 + countChildren(child)
-    }, 0)
-}
 
 export const getAllSubtreeNodes = (trace: TraceDetails): TraceDetails[] => {
     return trace.children.reduce((acc, child) => {

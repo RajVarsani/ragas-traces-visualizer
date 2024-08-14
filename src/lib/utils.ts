@@ -18,3 +18,9 @@ export const getAccuracy = (trace: TraceDetails): number => {
   }
 }
 
+
+export const countChildren = (trace: TraceDetails): number => {
+  return trace.children.reduce((acc, child) => {
+    return acc + 1 + countChildren(child)
+  }, 0)
+}
