@@ -1,6 +1,9 @@
-import TraceDetailsSheet from "@/components/explore/TraceDetailsSheet";
-import TracesTreeView from "@/components/explore/TracesTreeView";
+import Header from "@/components/dashboard/Header";
 
 export default function Page() {
-  return <main className="w-screen h-screen">Dashboard</main>;
+  return (
+    <main className="w-screen h-screen">
+      <Header />
+    </main>
+  );
 }
