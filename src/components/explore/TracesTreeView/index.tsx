@@ -1,12 +1,5 @@
 "use client";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useTracesDetails } from "@/hooks/traces.hooks";
 import { TraceDetails } from "@/types";
 import {
@@ -20,7 +13,7 @@ import {
   useNodesState,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import {
   buildChildren,
@@ -34,10 +27,9 @@ import { TraceNode as TraceNodeType } from "./TraceNode/types";
 
 const TracesTreeView = () => {
   const params = useParams();
-  const router = useRouter();
   const activeItem = params.id as string;
   const { spans } = useTracesDetails();
-  // const [activeItem, setActiveItem] = useState(0);
+
   const [nodes, setNodes, onNodesChange] = useNodesState<TraceNodeType>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
@@ -213,23 +205,6 @@ const TracesTreeView = () => {
         <Background />
         <Controls showZoom position="bottom-right" />
       </ReactFlow>
-      <div className="absolute top-5 left-5">
-        <Select
-          value={activeItem.toString()}
-          onValueChange={(value) => router.push(`/explore/${value}`)}
-        >
-          <SelectTrigger className="w-[280px] capitalize truncate rounded-sm bg-white bg-opacity-5">
-            <SelectValue placeholder="Theme" />
-          </SelectTrigger>
-          <SelectContent>
-            {spans.map((span, index) => (
-              <SelectItem key={span.id} value={span.id} className="capitalize">
-                {span.self.name} - {span.id.split("-").at(-1)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
     </>
   );
 };
