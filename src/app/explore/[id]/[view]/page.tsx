@@ -26,10 +26,10 @@ export default function Page() {
         ) : (
           <>
             <TracesTreeView />
-            <TraceDetailsSheet />
           </>
         )}
       </motion.div>
+      <TraceDetailsSheet />
       <SpanSelector />
     </main>
   );
