@@ -3,7 +3,6 @@
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -11,12 +10,12 @@ import {
 } from "@/components/ui/table";
 
 import { Button } from "@/components/ui/button";
-import { MagnifyingGlassIcon, SizeIcon } from "@radix-ui/react-icons";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
 import { useTracesDetails } from "@/hooks/traces.hooks";
 import { countChildren } from "@/lib/utils";
+import { SizeIcon } from "@radix-ui/react-icons";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useMemo } from "react";
 
 const Spans = () => {
   const searchParams = useSearchParams();
@@ -54,7 +53,7 @@ const Spans = () => {
                   <TableCell>{span.self.name}</TableCell>
                   <TableCell>{countChildren(span)}</TableCell>
                   <TableCell className="text-right py-4">
-                    <Link href={`/explore/${span.id}`}>
+                    <Link href={`/explore/${span.id}/table`}>
                       <Button
                         variant="outline"
                         className="py-1 px-3 h-fit w-fit items-center gap-2"

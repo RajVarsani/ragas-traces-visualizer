@@ -10,25 +10,22 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTracesDetails } from "@/hooks/traces.hooks";
 import { MixerVerticalIcon, TableIcon } from "@radix-ui/react-icons";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 const SpanSelector = () => {
   const params = useParams();
   const router = useRouter();
-  const searchParams = useSearchParams();
 
-  const activeItem = params.id as string;
-  const activeTab = searchParams.get("view") || "table";
+  const spanId = params.id as string;
+  const viewType = params.view as string;
 
   const { spans } = useTracesDetails();
 
   return (
     <div className="absolute top-5 left-5 flex gap-4">
       <Select
-        value={activeItem.toString()}
-        onValueChange={(value) =>
-          router.push(`/explore/${value}?${searchParams.toString()}`)
-        }
+        value={spanId.toString()}
+        onValueChange={(value) => router.push(`/explore/${value}/${viewType}`)}
       >
         <SelectTrigger className="w-[280px] capitalize truncate rounded-sm bg-white bg-opacity-5">
           <SelectValue placeholder="Theme" />
@@ -42,13 +39,13 @@ const SpanSelector = () => {
         </SelectContent>
       </Select>
 
-      <Tabs defaultValue={activeTab}>
+      <Tabs defaultValue={viewType}>
         <TabsList>
-          <TabsTrigger value="table" onClick={() => router.push(`?view=table`)}>
+          <TabsTrigger value="table" onClick={() => router.replace("table")}>
             <TableIcon className="mr-2" />
             Tables
           </TabsTrigger>
-          <TabsTrigger value="graph" onClick={() => router.push(`?view=graph`)}>
+          <TabsTrigger value="graph" onClick={() => router.replace(`graph`)}>
             <MixerVerticalIcon className="mr-2" />
             Graph
           </TabsTrigger>

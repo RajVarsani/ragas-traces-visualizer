@@ -30,7 +30,7 @@ const Header = () => {
         >
           <input
             placeholder="Search for a span"
-            className="w-full py-2 px-4 h-fit ml-4"
+            className="!w-full !py-2 !px-4 h-fit ml-4"
             style={{
               all: "unset",
             }}

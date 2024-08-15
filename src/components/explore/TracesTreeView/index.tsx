@@ -27,7 +27,7 @@ import { TraceNode as TraceNodeType } from "./TraceNode/types";
 
 const TracesTreeView = () => {
   const params = useParams();
-  const activeItem = params.id as string;
+  const spanId = params.id as string;
   const { spans } = useTracesDetails();
 
   const [nodes, setNodes, onNodesChange] = useNodesState<TraceNodeType>([]);
@@ -174,11 +174,11 @@ const TracesTreeView = () => {
   };
 
   useEffect(() => {
-    const span = spans.find((span) => span.id === activeItem);
+    const span = spans.find((span) => span.id === spanId);
     if (span) {
       mountSpan(span);
     }
-  }, [activeItem]);
+  }, [spanId]);
 
   return (
     <>
