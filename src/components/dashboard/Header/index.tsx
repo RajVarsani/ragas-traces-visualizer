@@ -25,12 +25,12 @@ const Header = () => {
           <h1 className="text-xl font-medium text-slate-100">Ragas</h1>
         </Link>
         <form
-          className="bg-white bg-opacity-5 ease-out py-2 px-4 pr-3 flex items-center justify-between w-full max-w-96 rounded-full outline outline-neutral-800 focus-within:bg-white  focus-within:bg-opacity-10  focus-within:outline-yellow-500 transition-all"
+          className="bg-white bg-opacity-5 ease-out pr-3 flex items-center justify-between w-full max-w-96 rounded-full outline outline-neutral-800 focus-within:bg-white  focus-within:bg-opacity-10  focus-within:outline-yellow-500 transition-all"
           onSubmit={handleSearch}
         >
           <input
             placeholder="Search for a span"
-            className="w-full"
+            className="w-full py-2 px-4 h-fit ml-4"
             style={{
               all: "unset",
             }}
