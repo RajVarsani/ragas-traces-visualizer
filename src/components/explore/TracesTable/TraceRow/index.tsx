@@ -37,7 +37,7 @@ const TraceRow = ({ data, depth, relationsActive }: Props) => {
           <div
             key={index}
             className={cn(
-              "w-6 h-[6.25rem] my-auto transition-[width] overflow-hidden",
+              "w-6 h-[6.375rem] my-auto transition-[width] overflow-hidden",
               {
                 "w-0": !relationsActive,
               }

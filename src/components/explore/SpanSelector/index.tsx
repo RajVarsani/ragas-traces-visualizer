@@ -34,7 +34,7 @@ const SpanSelector = () => {
             <SelectValue placeholder="Theme" />
           </SelectTrigger>
           <SelectContent>
-            {spans.map((span, index) => (
+            {spans.map((span) => (
               <SelectItem key={span.id} value={span.id} className="capitalize">
                 {span.self.name} - {span.id.split("-").at(-1)}
               </SelectItem>
