@@ -5,9 +5,9 @@ import { TRACE_NODE_TYPE } from "./TraceNode/constants"
 import { TraceNode, TraceNodeMetadata } from "./TraceNode/types"
 
 
-export const getAllSubtreeNodes = (trace: TraceDetails): TraceDetails[] => {
+export const getSubtreeChildren = (trace: TraceDetails): TraceDetails[] => {
     return trace.children.reduce((acc, child) => {
-        return [...acc, child, ...getAllSubtreeNodes(child)]
+        return [...acc, child, ...getSubtreeChildren(child)]
     }, [] as TraceDetails[])
 }
 
@@ -40,7 +40,7 @@ export const mapTraceToNode = (
     } as TraceNode
 }
 
-export const buildChildren = (node: TraceNode, meta: TraceNodeMetadata) => {
+export const buildChildrenNodes = (node: TraceNode, meta: TraceNodeMetadata) => {
     const nodes: TraceNode[] = node.data.data.children.map((child, index) => {
         return mapTraceToNode(child, {
             vertical: {

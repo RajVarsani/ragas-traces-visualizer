@@ -29,6 +29,7 @@ export default function Page() {
           </>
         )}
       </motion.div>
+
       <TraceDetailsSheet />
       <SpanSelector />
     </main>

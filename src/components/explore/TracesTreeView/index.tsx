@@ -16,8 +16,8 @@ import "@xyflow/react/dist/style.css";
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
 import {
-  buildChildren,
-  getAllSubtreeNodes,
+  buildChildrenNodes,
+  getSubtreeChildren,
   getNodeColor,
   mapTraceToNode,
 } from "./helpers";
@@ -27,8 +27,9 @@ import { TraceNode as TraceNodeType } from "./TraceNode/types";
 
 const TracesTreeView = () => {
   const params = useParams();
-  const spanId = params.id as string;
   const { spans } = useTracesDetails();
+
+  const spanId = params.id as string;
 
   const [nodes, setNodes, onNodesChange] = useNodesState<TraceNodeType>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
@@ -40,7 +41,7 @@ const TracesTreeView = () => {
     nodes: TraceNodeType[];
     edges: Edge[];
   } => {
-    const { nodes, edges } = buildChildren(node, {
+    const { nodes: newNodes, edges: newEdges } = buildChildrenNodes(node, {
       handlers: {
         expand: expandNode,
         collapse: collapseNode,
@@ -50,56 +51,43 @@ const TracesTreeView = () => {
       childrenInPreview: false,
     });
 
-    console.log("EX");
-    setNodes((nds) => {
-      // console.log(nds, nodes);
-      console.log(
-        JSON.parse(JSON.stringify(nds)),
-        JSON.parse(JSON.stringify(nodes))
-      );
-      nds = JSON.parse(JSON.stringify(nds));
+    setNodes((prevNodes) => {
+      prevNodes = JSON.parse(JSON.stringify(prevNodes));
+
       const updatedData = [
-        ...nds.map((item) => {
-          console.log("Setting expanded", item.data.data.id, node.id);
+        ...prevNodes.map((item) => {
           if (item.data.data.id === node.id) {
-            console.log("SUCCESS");
             item.data.metadata.isExpanded = true;
             item.data.metadata.childrenInPreview = isPreview;
           }
           return item;
         }),
-        ...nodes,
+        ...newNodes,
       ].map((item) => {
         item.data.metadata.handlers.expand = expandNode;
         item.data.metadata.handlers.collapse = collapseNode;
+
         return item;
       });
 
-      // remove duplicate nodes
-      // start from the end
       const uniqueNodes = [];
-      const lookUp: Record<string, boolean> = {};
+      const traceExistsMap: Record<string, boolean> = {};
+
       for (let i = updatedData.length - 1; i >= 0; i--) {
         const node = updatedData[i];
-        if (!lookUp[node.id]) {
-          lookUp[node.id] = true;
+
+        if (!traceExistsMap[node.id]) {
+          traceExistsMap[node.id] = true;
           uniqueNodes.push(node);
         }
       }
 
-      // console.log("UNIQUE NODES", uniqueNodes);
-      console.log("UNIQUE NODES", JSON.parse(JSON.stringify(uniqueNodes)));
       return uniqueNodes;
     });
-    // setEdges((eds) => JSON.parse(JSON.stringify([...eds, ...edges])));
-    setEdges((eds) => {
-      eds = JSON.parse(JSON.stringify(eds));
-      const updatedEdges = [...eds, ...edges];
-      console.log(
-        "EDGES",
-        JSON.parse(JSON.stringify(eds)),
-        JSON.parse(JSON.stringify(edges))
-      );
+
+    setEdges((prevEdges) => {
+      prevEdges = JSON.parse(JSON.stringify(prevEdges));
+      const updatedEdges = [...prevEdges, ...newEdges];
 
       const uniqueEdges = [];
       const lookUp: Record<string, boolean> = {};
@@ -111,33 +99,34 @@ const TracesTreeView = () => {
         }
       }
 
-      console.log("UNIQUE EDGES", JSON.parse(JSON.stringify(uniqueEdges)));
       return uniqueEdges;
     });
-    return { nodes, edges };
+
+    return { nodes: newNodes, edges: newEdges };
   };
 
   const collapseNode = (node: TraceNodeType) => {
-    const allSubtreeNodes = getAllSubtreeNodes(node.data.data);
+    const allSubtreeNodes = getSubtreeChildren(node.data.data);
     const allSubtreeNodesIds = allSubtreeNodes.map((n) => n.id);
 
-    setNodes((nds) =>
-      nds
-        .filter((nd) => !allSubtreeNodesIds.includes(nd.id))
+    setNodes((prevNodes) =>
+      prevNodes
+        .filter((item) => !allSubtreeNodesIds.includes(item.id))
         .map((item) => {
           if (item.id === node.id) {
             item.data.metadata.isExpanded = false;
             item.data.metadata.childrenInPreview = false;
           }
+
           return item;
         })
     );
 
-    setEdges((eds) =>
-      eds.filter(
-        (ed) =>
-          !allSubtreeNodesIds.includes(ed.source) &&
-          !allSubtreeNodesIds.includes(ed.target)
+    setEdges((prevEdges) =>
+      prevEdges.filter(
+        (item) =>
+          !allSubtreeNodesIds.includes(item.source) &&
+          !allSubtreeNodesIds.includes(item.target)
       )
     );
   };
@@ -168,6 +157,7 @@ const TracesTreeView = () => {
 
     setNodes([rootNode]);
     setEdges([]);
+
     setTimeout(() => {
       expandNode(rootNode);
     }, 0);

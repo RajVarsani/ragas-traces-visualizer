@@ -8,16 +8,19 @@ import { motion } from "framer-motion";
 import { getBackgroundColor, getBorderClass } from "./helpers";
 import { Props } from "./types";
 
-const TraceRow = ({ data, depth, connectionMode }: Props) => {
+const TraceRow = ({ data, depth, relationsActive }: Props) => {
   const { openTrace } = useTraceSheetStore();
 
   const partialId = data.id.split("-").at(-1);
   const isChain = data.type === "chain";
 
-  const accentColor = getBorderClass(data);
-  const backgroundColor = getBackgroundColor(data);
+  const borderClass = getBorderClass(data);
+  const backgroundClass = getBackgroundColor(data);
 
-  const copyToClipboard = () => {
+  const copyToClipboard = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
     navigator.clipboard.writeText(data.id);
   };
 
@@ -29,13 +32,14 @@ const TraceRow = ({ data, depth, connectionMode }: Props) => {
         transition={{ duration: 0.2 + depth * 0.04 }}
         className="flex items-center max-w-7xl"
       >
+        {/* Tree Paths */}
         {new Array(depth).fill(null).map((_, index) => (
           <div
             key={index}
             className={cn(
               "w-6 h-[6.25rem] my-auto transition-[width] overflow-hidden",
               {
-                "w-0": !connectionMode,
+                "w-0": !relationsActive,
               }
             )}
           >
@@ -43,17 +47,19 @@ const TraceRow = ({ data, depth, connectionMode }: Props) => {
               className={cn(
                 "h-full w-[1px] bg-slate-300 mr-auto ml-1 bg-opacity-0",
                 {
-                  "bg-opacity-10": connectionMode,
+                  "bg-opacity-10": relationsActive,
                 }
               )}
             />
           </div>
         ))}
+
+        {/* Current Node Data */}
         <div
           className={cn(
             "my-1.5 px-4 min-w-52 h-fit grid py-4 border border-opacity-60 rounded-2xl bg-opacity-5 transition-all ease-out cursor-pointer w-full",
-            accentColor,
-            backgroundColor
+            borderClass,
+            backgroundClass
           )}
           style={{
             gridTemplateColumns: "13rem 1fr 1fr 1fr 5rem",
@@ -147,12 +153,14 @@ const TraceRow = ({ data, depth, connectionMode }: Props) => {
           </span>
         </div>
       </motion.div>
+
+      {/* Sub Tree Nodes */}
       {data.children.map((child) => (
         <TraceRow
           key={child.id}
           data={child}
           depth={depth + 1}
-          connectionMode={connectionMode}
+          relationsActive={relationsActive}
         />
       ))}
     </>
