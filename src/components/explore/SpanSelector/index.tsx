@@ -22,35 +22,39 @@ const SpanSelector = () => {
   const { spans } = useTracesDetails();
 
   return (
-    <div className="absolute top-5 left-5 flex gap-4">
-      <Select
-        value={spanId.toString()}
-        onValueChange={(value) => router.push(`/explore/${value}/${viewType}`)}
-      >
-        <SelectTrigger className="w-[280px] capitalize truncate rounded-sm bg-white bg-opacity-5">
-          <SelectValue placeholder="Theme" />
-        </SelectTrigger>
-        <SelectContent>
-          {spans.map((span, index) => (
-            <SelectItem key={span.id} value={span.id} className="capitalize">
-              {span.self.name} - {span.id.split("-").at(-1)}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+    <div className="absolute top-5 left-0 pl-5 pr-5 w-full">
+      <div className="flex gap-4 mx-auto w-full max-w-[82rem] justify-between">
+        <Select
+          value={spanId.toString()}
+          onValueChange={(value) =>
+            router.push(`/explore/${value}/${viewType}`)
+          }
+        >
+          <SelectTrigger className="w-[280px] capitalize truncate rounded-sm bg-white bg-opacity-5">
+            <SelectValue placeholder="Theme" />
+          </SelectTrigger>
+          <SelectContent>
+            {spans.map((span, index) => (
+              <SelectItem key={span.id} value={span.id} className="capitalize">
+                {span.self.name} - {span.id.split("-").at(-1)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
-      <Tabs defaultValue={viewType}>
-        <TabsList>
-          <TabsTrigger value="table" onClick={() => router.replace("table")}>
-            <TableIcon className="mr-2" />
-            Tables
-          </TabsTrigger>
-          <TabsTrigger value="graph" onClick={() => router.replace(`graph`)}>
-            <MixerVerticalIcon className="mr-2" />
-            Graph
-          </TabsTrigger>
-        </TabsList>
-      </Tabs>
+        <Tabs defaultValue={viewType}>
+          <TabsList>
+            <TabsTrigger value="table" onClick={() => router.replace("table")}>
+              <TableIcon className="mr-2" />
+              Tables
+            </TabsTrigger>
+            <TabsTrigger value="graph" onClick={() => router.replace(`graph`)}>
+              <MixerVerticalIcon className="mr-2" />
+              Graph
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
     </div>
   );
 };
