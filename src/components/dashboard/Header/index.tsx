@@ -4,14 +4,19 @@ import { Button } from "@/components/ui/button";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Header = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
+
   const searchQuery = searchParams.get("q");
 
-  const router = useRouter();
   const [query, setQuery] = useState(searchQuery || "");
+
+  useEffect(() => {
+    setQuery(searchQuery || "");
+  }, [searchQuery]);
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -24,6 +29,7 @@ const Header = () => {
         <Link href="/">
           <h1 className="text-xl font-medium text-slate-100">Ragas</h1>
         </Link>
+
         <form
           className="bg-white bg-opacity-5 ease-out pr-3 flex items-center justify-between w-full max-w-96 rounded-full outline outline-neutral-800 focus-within:bg-white  focus-within:bg-opacity-10  focus-within:outline-yellow-500 transition-all"
           onSubmit={handleSearch}
@@ -37,6 +43,7 @@ const Header = () => {
             onChange={(e) => setQuery(e.target.value)}
             value={query}
           />
+
           <Button
             type="submit"
             variant="ghost"

@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn, getAccuracy } from "@/lib/utils";
 import useTraceSheetStore from "@/store/traceSheet";
-import { CopyIcon, ExternalLinkIcon } from "@radix-ui/react-icons";
+import { CopyIcon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
 import { getBackgroundColor, getBorderClass } from "./helpers";
 import { Props } from "./types";
