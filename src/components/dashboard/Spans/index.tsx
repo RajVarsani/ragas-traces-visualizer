@@ -50,7 +50,7 @@ const Spans = () => {
             <TableRow>
               <TableHead>ID</TableHead>
               <TableHead>Name</TableHead>
-              <TableHead>Children</TableHead>
+              <TableHead>Traces</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
